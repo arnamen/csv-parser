@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import {useState} from 'react';
+
+import FileUpload from './components/FileUpload';
+import Table from './components/Table';
+import ErrorModal from './components/ErrorModal';
+
 import './App.css';
 
 function App() {
+  //data received from .csv file
+  const [uploadedData, setUploadedData] = useState();
+  //message will appear when uploading failed
+  const [errorMessage, setErrorMessage] = useState();
+
+  const dataValidationError = (error) => {
+    setUploadedData();
+    setErrorMessage(error);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <FileUpload onSuccess={setUploadedData} onError={setErrorMessage} onReset={() => setUploadedData()}/>
+        {uploadedData && <Table data={uploadedData} onError={dataValidationError}/>}
+        {errorMessage && <ErrorModal error={errorMessage} onClear={() => setErrorMessage(null)}/>}
     </div>
   );
 }
